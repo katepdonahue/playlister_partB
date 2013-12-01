@@ -60,6 +60,7 @@ def artist_songs(y = false)
   end
   if (starts_with_array.size == 1) && (done == false)
     ans = starts_with_array[0]
+    done = true
   elsif (starts_with_array.size > 1) && (done == false)
     starts_with_array.each do |art_obj|
       es = "s"
@@ -70,7 +71,8 @@ def artist_songs(y = false)
         puts "#{art_obj.name} - #{art_obj.songs.size} Song#{es}"
       end
     end
-  elsif done
+  end
+  if done
     if y
       songs_page(ans)
     else
