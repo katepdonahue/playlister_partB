@@ -35,17 +35,55 @@ def artist_songs(y = false)
   extra = "or song " if y
   puts "Type name of artist #{extra}for details"
   ans = gets.chomp
+  done = false
+  starts_with_array = []
   Artist.all.each do |art_obj|
-    if ans == art_obj.name 
+    if (ans != art_obj.name) && (art_obj.name.start_with? ans)
+      # es = "s"
+      # es = "" if art_obj.songs.size == 1
+      # if y
+      #   puts "#{art_obj.genre.name} - #{art_obj.genre.songs.size} Song#{es}, #{art_obj.genre.artists.size} Artist#{es}"
+      # else
+      #   puts "#{art_obj.name} - #{art_obj.songs.size} Song#{es}"
+      # end
+      starts_with_array << art_obj
+    elsif ans == art_obj.name 
+      ans = art_obj
+      # es = "s"
+      # es = "" if art_obj.songs.size == 1
+      # puts "#{art_obj.name} - #{art_obj.songs.size} Song#{es}"
+      # art_obj.songs.each_with_index do |s_obj, i|
+      #   puts "  #{i+1}.#{s_obj.name} - #{s_obj.genre.name}"
+      # end
+      done = true
+    end
+  end
+  if (starts_with_array.size == 1) && (done == false)
+    ans = starts_with_array[0]
+  elsif (starts_with_array.size > 1) && (done == false)
+    starts_with_array.each do |art_obj|
       es = "s"
       es = "" if art_obj.songs.size == 1
-      puts "#{art_obj.name} - #{art_obj.songs.size} Song#{es}"
-      art_obj.songs.each_with_index do |s_obj, i|
+      if y
+        puts "#{art_obj.genre.name} - #{art_obj.genre.songs.size} Song#{es}, #{art_obj.genre.artists.size} Artist#{es}"
+      else
+        puts "#{art_obj.name} - #{art_obj.songs.size} Song#{es}"
+      end
+    end
+  elsif done
+    if y
+      songs_page(ans)
+    else
+      es = "s"
+      es = "" if ans.songs.size == 1
+      puts "#{ans.name} - #{ans.songs.size} Song#{es}"
+      ans.songs.each_with_index do |s_obj, i|
         puts "  #{i+1}.#{s_obj.name} - #{s_obj.genre.name}"
       end
     end
   end
-  songs_page(ans) if y
+  done = true if ans == "q"
+  artist_songs unless done
 end
 
 def songs_page(ans)
