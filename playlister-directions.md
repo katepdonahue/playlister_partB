@@ -1,16 +1,16 @@
 The goal of the second part of this lab is to create a command line interface got for the playlister application.  
 (The third part of the excercise will be evolving the CLI to be a web interface)
  
-Write a ruby script that parses the data within the data directory
+<!-- Write a ruby script that parses the data within the data directory
 and uses the classes defined in partA to instantiate Song, Artist, and Genres
 for each file. These instances should be correctly associated to each other
-so that artist.genre will return a Genre object, etc.  
+so that artist.genre will return a Genre object, etc.   -->
  
-The data directory is filled with a bunch of songs in this format
+<!-- The data directory is filled with a bunch of songs in this format
 Artist Name - Song Name [genre_name].mp3
 For example A$AP Rocky - Peso [dance].mp3
 This file would give us a new artist instance, a new song instance, and a new genre
-and you'd want to define the relationships between the objects (ie add the song to the artist's array of songs)
+and you'd want to define the relationships between the objects (ie add the song to the artist's array of songs) -->
  
 Your CLI should prompt the user with "Browse by artist or genre".  If they type "artist" and hit enter it should take them to the next section which should print out a list of artists, or genres.  The artist index must list all the artists. This list must be sorted alphabetically.
 In addition to the Artists name, the artists total song count should be displayed.  This list should also say how many Artists there are in total.  Your CLI should prompt the user with "Select Artist"
