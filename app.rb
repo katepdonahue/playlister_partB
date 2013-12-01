@@ -22,6 +22,64 @@ def generate
   end
 end
 
+def artist
+  Artist.all.each do |art_obj|
+    es = "s"
+    es = "" if art_obj.songs.size == 1
+    puts "#{art_obj.name} - #{art_obj.songs.size} Song#{es}"
+  end
+  artist_songs
+end
+
+def artist_songs(y = false)
+  extra = "or song " if y
+  puts "Type name of artist #{extra}for details"
+  ans = gets.chomp
+  Artist.all.each do |art_obj|
+    if ans == art_obj.name 
+      es = "s"
+      es = "" if art_obj.songs.size == 1
+      puts "#{art_obj.name} - #{art_obj.songs.size} Song#{es}"
+      art_obj.songs.each_with_index do |s_obj, i|
+        puts "  #{i+1}.#{s_obj.name} - #{s_obj.genre.name}"
+      end
+    end
+  end
+  songs_page(ans) if y
+end
+
+def songs_page(ans)
+  Song.all.each do |s_obj|
+    if ans == s_obj.name 
+      puts "Title: #{s_obj.name}"
+      puts "Artist: #{s_obj.artist.name}"
+      puts "Genre: #{s_obj.genre.name}"
+    end
+  end
+end
+
+def genre
+  sort_g = Genre.all.sort_by { |g_obj| g_obj.name }
+  sort_g.each do |g|
+    es = "" if g.songs.size == 1
+    es = "s" if g.songs.size > 1
+    puts "#{g.name} - #{g.songs.size} Song#{es}, #{g.artists.size} Artist#{es}" # the es on Artist is cheating
+  end
+  puts "Type name of genre for details"
+  ans = gets.chomp
+  Genre.all.each do |g_obj|
+    if ans == g_obj.name 
+      es = "s"
+      es = "" if g_obj.songs.size == 1
+      puts "#{g_obj.name} - #{g_obj.songs.size} Song#{es}, #{g_obj.artists.size} Artist#{es}"
+      g_obj.songs.each_with_index do |s_obj, i|
+        puts "  #{i+1}.#{s_obj.artist.name} - #{s_obj.name}"
+      end
+    end
+  end
+  artist_songs(true)
+end
+
 def play
   puts "Browse by artist or genre."
   ans = gets.chomp
@@ -31,25 +89,10 @@ def play
   end
   if ans == "artist"
     # print list of artists alphabetical with song number 
-    Artist.all.each do |art_obj|
-      es = "s"
-      es = "" if art_obj.songs.size == 1
-      puts "#{art_obj.name} - #{art_obj.songs.size} Song#{es}"
-    end
-    puts "Type name of artist for songs"
-    ans = gets.chomp
-    Artist.all.each do |art_obj|
-      if ans == art_obj.name 
-        es = "s"
-        es = "" if art_obj.songs.size == 1
-        puts "#{art_obj.name} - #{art_obj.songs.size} Song#{es}"
-        art_obj.songs.each_with_index do |s_obj, i|
-          puts "  #{i+1}.#{s_obj.name} - #{s_obj.genre.name}"
-        end
-      end
-    end
+    artist
   elsif ans == "genre"
-    # print list of genres
+    # print list of genres from most songs to least
+    genre
   elsif ans == "h"
     puts "--------------------------------------------------------------"
     puts "Commands:"
@@ -69,98 +112,6 @@ while want
 end
 
 
-# class App
-#   attr_reader :names, :twitters, :blogs
-
-#   def initialize
-#     my_scraper = Scraper.new "http://flatironschool-bk.herokuapp.com/"
-#     @names = my_scraper.get_students_names
-#     @twitters = my_scraper.get_twitter
-#     @blogs = my_scraper.get_blog
-#   end
-
-#   def generate_directory
-#     our_class = []
-#     28.times do |i|
-#       our_class << Student.new(names[i], twitters[i], blogs[i])
-#     end
-#     our_class
-#   end
-
-#   def directory
-#     generate_directory.each do |classmate|
-#       puts "Name: #{classmate.name},  Twitter: #{classmate.twitter}, Blog: #{classmate.blog}\n"
-#     end
-#   end
-
-#   def random_blog
-#     Launchy.open("#{blogs.sample}")
-#   end
-
-#   def random_twitter
-#     Launchy.open("twitter.com/#{twitters.sample[1..-1]}")
-#   end
-
-#   def blog(stu_name)
-#     generate_directory.each do |student_object|
-#       if student_object.name.upcase.start_with?(stu_name.upcase)
-#         if student_object.blog == "none"; puts "none"
-#         else; Launchy.open("#{student_object.blog}"); end
-#       end
-#     end
-#   end
-
-#   def twitter(stu_name)
-#     generate_directory.each do |student_object|
-#       if student_object.name.upcase.start_with?(stu_name.upcase)
-#         if student_object.twitter == "none"; puts "none"
-#         else; Launchy.open("twitter.com/#{student_object.twitter[1..-1]}"); end
-#       end
-#     end
-#   end
-
-  # def play
-  #   puts "Hey, what do you want?"
-  #   ans = gets.chomp
-  #   while (%w(rand_b rant_t blog twitter q h).include? ans) == false
-  #     puts "Type h for help."
-  #     ans = gets.chomp
-  #   end
-  #   if ans == "rand_b"
-  #     random_blog
-  #   elsif ans == "rand_t"
-  #     random_twitter
-  #   elsif ans == "blog"
-  #     puts "Whose?"
-  #     name = gets.chomp
-  #     blog(name)
-  #   elsif ans == "twitter"
-  #     puts "Whose?"
-  #     name = gets.chomp
-  #     twitter(name)
-  #   elsif ans == "h"
-  #     puts "--------------------------------------------------------------"
-  #     puts "Commands:"
-  #     puts "rand_b  for random blog."
-  #     puts "rand_t  for random twitter."
-  #     puts "blog    for specific blog (you will be prompted for name)."
-  #     puts "twitter for specific twitter (you will be prompted for name)."
-  #     puts "q       for quit."
-  #     puts "--------------------------------------------------------------"
-  #   end
-  #   ans
-  # end
-
-# end
-
-
-# # game code
-# app1 = App.new
-# want = true
-# while want
-#   last_input = app1.play
-#   want = false if last_input == "q"
-# end
 
 
 
