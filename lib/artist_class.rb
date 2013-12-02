@@ -49,8 +49,8 @@ class Artist
 
   def menu
     es = "s"
-    es = "" if art_obj.songs.size == 1
-    puts "#{art_obj.name} - #{art_obj.songs.size} Song#{es}"
+    es = "" if self.songs.size == 1
+    puts "#{self.name} - #{self.songs.size} Song#{es}"
   end
 
 end

@@ -48,12 +48,11 @@ def narrow_song(inp, d)
   starts_with_array
 end
 
-def print_list?(inp, array, d)
-  if (array.size == 1) && (d == false)
+def print_list?(inp, array)
+  if (array.size == 1)
     inp = array[0]
-    d = true
     return false
-  elsif (array.size > 1) && (d == false)
+  elsif (array.size > 1)
     return true
   end
 end
@@ -64,43 +63,45 @@ def artist
 end
 
 def art_responder
-  puts "Type name of artist for details"
+  puts "Type name of artist for details."
   ans = gets.chomp
   done = false
   # we are coming from artist menu screen
-  list = narrow_art(ans, done) # returns array of narrowed results artists
-  if print_list?(ans, list, done)
+  list = narrow_art(ans, done) # returns array of narrowed results artists or prints artist page if full artist 
+  if print_list?(ans, list) && !done
     list.each do |art_obj| # print each artist object in artist menu form
       art_obj.menu
     end
-  else
+  elsif !print_list?(ans, list) && !done
     list[0].page # print single artist object (index 0) in artist page form
-  end
+    done = true
   end
   done = true if ans == "q"
   art_responder unless done
 end
 
 def gen_responder
-  puts "Type name of artist or song for details"
+  puts "Type name of artist or song for details."
   ans = gets.chomp
   done = false
   # we are coming from genre menu screen
-  list = narrow_song(ans, done) # returns array of narrowed results songs
-  if print_list?(ans, list, done)
+  list = narrow_song(ans, done) # returns array of narrowed results songs or prints song page if full song name
+  if print_list?(ans, list) && !done
     list.each do |song_obj| # print each song object in genre page form
       song_obj.genre.page
     end
-  else
+  elsif !print_list?(ans, list) && !done
     list[0].page # print single song object (index 0) in song page form
+    done = true
   end
-  list = narrow_art(ans, done) # returns array of narrowed results artists
-  if print_list?(ans, list, done)
+  list = narrow_art(ans, done) # returns array of narrowed results artists or prints artist page if full artist name
+  if print_list?(ans, list) && !done
     list.each do |art_obj| # print each artist object in genre page form
-      art_obj.genre.page
+      art_obj.genres[0].page # cheating. Really should find the genre we are in
     end
-  else
+  elsif !print_list?(ans, list) && !done
     list[0].page # print single song object (index 0) in song page form
+    done = true
   end
   done = true if ans == "q"
   gen_responder unless done
