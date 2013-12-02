@@ -6,18 +6,16 @@ require 'debugger'
 def generate
   Dir["./data/*.mp3"].each do |file|
     # debugger
-    artist_sg = file.split("/")[2].split(" - ")
-    artist_array = Artist.all.select { |x| x.name == artist_sg[0] }
+    a_s_g = file[7..-1].split(/ - | \[|\].mp3/)
+    artist_array = Artist.all.select { |x| x.name == a_s_g[0] }
     if artist_array.size == 0
-      new_artist = Artist.new.tap{ |a| a.name = artist_sg[0] } # need to check that artist doesn't already exist
+      new_artist = Artist.new.tap{ |a| a.name = a_s_g[0] } # need to check that artist doesn't already exist
     else
       new_artist = artist_array[0]
     end
     # debugger
-    song_gen = artist_sg[1].gsub(" [", "].mp3").split("].mp3") # how do you do a split on multiple things?
-    # debugger
-    new_song = Song.new.tap{ |s| s.name = song_gen[0] }
-    new_song.genre=(song_gen[1]) # makes genre an instance of genre class, add songs to songs array in genre class
+    new_song = Song.new.tap{ |s| s.name = a_s_g[1] }
+    new_song.genre=(a_s_g[1]) # makes genre an instance of genre class, add songs to songs array in genre class
     new_artist.add_song(new_song) # adds song object to new_artist.songs, adds genre to new_artists.genres, adds new_artist to genre_obj.artists
   end
 end
