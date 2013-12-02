@@ -45,72 +45,70 @@ def narrow_song(inp, d)
       d = true
     end
   end
-  starts_with_array = []
+  starts_with_array
 end
 
-# turned into class methods, make sure to call .each on the array and then call menu inside iteration
-# def genre_menu(array)
-#   array.each do |g|
-#     es = "" if g.songs.size == 1
-#     es = "s" if g.songs.size > 1
-#     puts "#{g.name} - #{g.songs.size} Song#{es}, #{g.artists.size} Artist#{es}" # the es on Artist is cheating
-#   end
-# end
-
-# def art_menu(array)
-#   array.each do |art_obj|
-#     es = "s"
-#     es = "" if art_obj.songs.size == 1
-#     puts "#{art_obj.name} - #{art_obj.songs.size} Song#{es}"
-#   end
-# end
-
-def print_form(inp, array, d)
+def print_list?(inp, array, d)
   if (array.size == 1) && (d == false)
     inp = array[0]
     d = true
-    art_details(inp)
+    return false
   elsif (array.size > 1) && (d == false)
-    array.each do |obj|
-      obj.page
-    end
+    return true
   end
 end
 
 def artist
-  Artist.all.each { |x| x.menu }
-  artist_songs
+  Artist.all.each { |obj| obj.menu }
+  art_responder
 end
 
-def artist_songs(y = false)
-  extra = "or song " if y
-  puts "Type name of artist #{extra}for details"
+def art_responder
+  puts "Type name of artist for details"
   ans = gets.chomp
   done = false
-  starts_with_array = []
-  narrow_art(ans, done)
-  print_form(art_menu, ans, starts_with_array, done)
-  if y
-    narrow_song(ans, done)
-    print_form(genre_menu, ans, starts_array, done, song_details)
+  # we are coming from artist menu screen
+  list = narrow_art(ans, done) # returns array of narrowed results artists
+  if print_list?(ans, list, done)
+    list.each do |art_obj| # print each artist object in artist menu form
+      art_obj.menu
+    end
+  else
+    list[0].page # print single artist object (index 0) in artist page form
+  end
   end
   done = true if ans == "q"
-  artist_songs(y) unless done
+  art_responder unless done
 end
 
-# def song_page(ans, d)
-#   Song.all.each do |s_obj|
-#     if ans == s_obj.name 
-#       puts "Title: #{s_obj.name}"
-#       puts "Artist: #{s_obj.artist.name}"
-#       puts "Genre: #{s_obj.genre.name}"
-#     end
-#   end
-#   d = true
-# end
+def gen_responder
+  puts "Type name of artist or song for details"
+  ans = gets.chomp
+  done = false
+  # we are coming from genre menu screen
+  list = narrow_song(ans, done) # returns array of narrowed results songs
+  if print_list?(ans, list, done)
+    list.each do |song_obj| # print each song object in genre page form
+      song_obj.genre.page
+    end
+  else
+    list[0].page # print single song object (index 0) in song page form
+  end
+  list = narrow_art(ans, done) # returns array of narrowed results artists
+  if print_list?(ans, list, done)
+    list.each do |art_obj| # print each artist object in genre page form
+      art_obj.genre.page
+    end
+  else
+    list[0].page # print single song object (index 0) in song page form
+  end
+  done = true if ans == "q"
+  gen_responder unless done
+end
 
 def genre
-  genre_menu(Genre.all.sort_by { |g_obj| g_obj.name })
+  sorted_g = Genre.all.sort_by { |g_obj| g_obj.songs.size }
+  sorted_g.each { |obj| obj.menu }
   puts "Type name of genre for details"
   ans = gets.chomp
   Genre.all.each do |g_obj|
@@ -118,7 +116,7 @@ def genre
       g_obj.page
     end
   end
-  artist_songs(true)
+  gen_responder
 end
 
 def play
@@ -151,54 +149,5 @@ while want
   last_input = play
   want = false if last_input == "q"
 end
-
-
-# def artist_songs(y = false)
-#   extra = "or song " if y
-#   puts "Type name of artist #{extra}for details"
-#   ans = gets.chomp
-#   done = false
-#   starts_with_array = []
-#   Artist.all.each do |art_obj|
-#     if (ans != art_obj.name) && (art_obj.name.start_with? ans)
-
-#       starts_with_array << art_obj
-#     elsif ans == art_obj.name 
-#       ans = art_obj
-#       done = true
-#     end
-#   end
-#   if (starts_with_array.size == 1) && (done == false)
-#     ans = starts_with_array[0]
-#     done = true
-#   elsif (starts_with_array.size > 1) && (done == false)
-#     starts_with_array.each do |art_obj|
-#       es = "s"
-#       es = "" if art_obj.songs.size == 1
-#       if y
-#         puts "#{art_obj.genre.name} - #{art_obj.genre.songs.size} Song#{es}, #{art_obj.genre.artists.size} Artist#{es}"
-#       else
-#         puts "#{art_obj.name} - #{art_obj.songs.size} Song#{es}"
-#       end
-#     end
-#   end
-#   if done
-#     if y
-#       songs_page(ans)
-#     else
-#       es = "s"
-#       es = "" if ans.songs.size == 1
-#       puts "#{ans.name} - #{ans.songs.size} Song#{es}"
-#       ans.songs.each_with_index do |s_obj, i|
-#         puts "  #{i+1}.#{s_obj.name} - #{s_obj.genre.name}"
-#       end
-#     end
-#   end
-#   done = true if ans == "q"
-#   artist_songs unless done
-# end
-
-
-
 
 
