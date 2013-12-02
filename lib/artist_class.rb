@@ -38,22 +38,20 @@ class Artist
     end
   end
 
-  # def add_song(song)
-  #   songs << song
-  #   if song.genre != ""
-  #     genres << song.genre
-  #     #debugger
-  #     # song.genre ||= Genre.new.tap{|g| g.name = song.genre}
-  #     song.genre.artists << self if song.genre.artists.include? self == false
-  #   end
-  # end
+  def page
+    es = "s"
+    es = "" if self.songs.size == 1
+    puts "#{self.name} - #{self.songs.size} Song#{es}"
+    self.songs.each_with_index do |s_obj, i|
+      puts "  #{i+1}.#{s_obj.name} - #{s_obj.genre.name}"
+    end
+  end
 
-
-  # def genres=(new_genre)
-  #   genres << new_genre
-  #   new_genre ||= Genre.new .tap{|g| g.name = new_genre}
-  #   new_genre.artists << self
-  # end
+  def menu
+    es = "s"
+    es = "" if art_obj.songs.size == 1
+    puts "#{art_obj.name} - #{art_obj.songs.size} Song#{es}"
+  end
 
 end
 

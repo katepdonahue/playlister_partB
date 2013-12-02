@@ -26,6 +26,12 @@ class Song
     SONGS
   end
 
+  def page
+    puts "Title: #{self.name}"
+    puts "Artist: #{self.artist.name}"
+    puts "Genre: #{self.genre.name}"
+  end
+
 end
 
 
