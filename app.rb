@@ -26,12 +26,12 @@ class App
     end
   end
 
-  def narrow_art(inp, d)
+  def narrow_art(d)
     starts_with_array = []
     Artist.all.each do |obj|
-      if (inp != obj.name) && (obj.name.start_with? inp)
+      if (@ans != obj.name) && (obj.name.start_with? @ans)
         starts_with_array << obj
-      elsif inp == obj.name 
+      elsif @ans == obj.name 
         obj.page
         d = true
       end
@@ -39,12 +39,12 @@ class App
     starts_with_array
   end
 
-  def narrow_song(inp, d)
+  def narrow_song(d)
     starts_with_array = []
     Song.all.each do |obj|
-      if (inp != obj.name) && (obj.name.start_with? inp)
+      if (@ans != obj.name) && (obj.name.start_with? @ans)
         starts_with_array << obj
-      elsif inp == obj.name 
+      elsif @ans == obj.name 
         obj.page
         d = true
       end
@@ -52,9 +52,9 @@ class App
     starts_with_array
   end
 
-  def print_list?(inp, array)
+  def print_list?(array)
     if (array.size == 1)
-      inp = array[0]
+      @ans = array[0]
       return false
     elsif (array.size > 1)
       return true
@@ -68,46 +68,46 @@ class App
 
   def art_responder
     puts "Type name of artist for details."
-    ans = gets.chomp
+    @ans = gets.chomp
     done = false
     # we are coming from artist menu screen
-    list = narrow_art(ans, done) # returns array of narrowed results artists or prints artist page if full artist 
-    if print_list?(ans, list) && !done
+    list = narrow_art(done) # returns array of narrowed results artists or prints artist page if full artist 
+    if print_list?(list) && !done
       list.each do |art_obj| # print each artist object in artist menu form
         art_obj.menu
       end
-    elsif !print_list?(ans, list) && !done
+    elsif !print_list?(list) && !done
       list[0].page # print single artist object (index 0) in artist page form
       done = true
     end
-    done = true if ans == "q"
+    done = true if @ans == "q"
     art_responder unless done
   end
 
   def gen_responder
     puts "Type name of artist or song for details."
-    ans = gets.chomp
+    @ans = gets.chomp
     done = false
     # we are coming from genre menu screen
-    list = narrow_song(ans, done) # returns array of narrowed results songs or prints song page if full song name
-    if print_list?(ans, list) && !done
+    list = narrow_song(done) # returns array of narrowed results songs or prints song page if full song name
+    if print_list?(list) && !done
       list.each do |song_obj| # print each song object in genre page form
         song_obj.genre.page
       end
-    elsif !print_list?(ans, list) && !done
+    elsif !print_list?(list) && !done
       list[0].page # print single song object (index 0) in song page form
       done = true
     end
-    list = narrow_art(ans, done) # returns array of narrowed results artists or prints artist page if full artist name
-    if print_list?(ans, list) && !done
+    list = narrow_art(done) # returns array of narrowed results artists or prints artist page if full artist name
+    if print_list?(list) && !done
       list.each do |art_obj| # print each artist object in genre page form
         art_obj.genres[0].page # cheating. Really should find the genre we are in
       end
-    elsif !print_list?(ans, list) && !done
+    elsif !print_list?(list) && !done
       list[0].page # print single song object (index 0) in song page form
       done = true
     end
-    done = true if ans == "q"
+    done = true if @ans == "q"
     gen_responder unless done
   end
 
@@ -115,9 +115,9 @@ class App
     sorted_g = Genre.all.sort_by { |g_obj| g_obj.songs.size }
     sorted_g.each { |obj| obj.menu }
     puts "Type name of genre for details"
-    ans = gets.chomp
+    @ans = gets.chomp
     Genre.all.each do |g_obj|
-      if ans == g_obj.name 
+      if @ans == g_obj.name 
         g_obj.page
       end
     end
@@ -126,18 +126,18 @@ class App
 
   def play
     puts "Browse by artist or genre."
-    ans = gets.chomp
-    while (%w(artist genre h q).include? ans) == false
+    @ans = gets.chomp
+    while (%w(artist genre h q).include? @ans) == false
       puts "Type h for help."
-      ans = gets.chomp
+      @ans = gets.chomp
     end
-    if ans == "artist"
+    if @ans == "artist"
       # print list of artists alphabetical with song number 
       artist
-    elsif ans == "genre"
+    elsif @ans == "genre"
       # print list of genres from most songs to least
       genre
-    elsif ans == "h"
+    elsif @ans == "h"
       puts "-" * 60
       puts "Commands:"
       puts "artist  for list of artists."
@@ -145,16 +145,15 @@ class App
       puts "q       for quit."
       puts "-" * 60
     end
-    ans
+    @ans
   end
 
 end
 
-my_App = App.new
-my_App.generate
+my_app = App.new
 want = true
 while want
-  last_input = play
+  last_input = my_app.play
   want = false if last_input == "q"
 end
 
